@@ -62,7 +62,7 @@ func draw_function_point(point_position: Vector2) -> void:
 		Function.Marker.SQUARE:
 			draw_rect(
 				Rect2(point_position - (Vector2.ONE * _point_size), (Vector2.ONE * _point_size * 2)), 
-				function.get_color(), true, 1.0
+				function.get_color(), true
 			)
 		Function.Marker.TRIANGLE:
 			draw_colored_polygon(

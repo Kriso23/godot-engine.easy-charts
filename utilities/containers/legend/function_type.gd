@@ -41,7 +41,7 @@ func _draw_function_and_marker() -> void:
 					Vector2(get_rect().end.x, get_rect().end.y / 2)
 				),
 				color_light,
-				3
+				true
 			)
 			draw_line(
 				Vector2(get_rect().position.x, center.y),
@@ -53,7 +53,7 @@ func _draw_function_and_marker() -> void:
 			draw_rect(
 				Rect2(center - (Vector2.ONE * 3), (Vector2.ONE * 3 * 2)),
 				color,
-				1.0
+				true
 			)
 		Function.Type.BAR:
 			draw_rect(
@@ -62,7 +62,7 @@ func _draw_function_and_marker() -> void:
 					Vector2(get_rect().end.x, get_rect().end.y)
 				),
 				color,
-				3
+				true
 			)
 		Function.Type.SCATTER, _:
 			pass
@@ -73,7 +73,8 @@ func _draw_function_and_marker() -> void:
 		Function.Marker.SQUARE:
 			draw_rect(
 				Rect2(center - (Vector2.ONE * 3), (Vector2.ONE * 3 * 2)), 
-				color, 1.0
+				color,
+				true
 			)
 		Function.Marker.TRIANGLE:
 			draw_colored_polygon(
