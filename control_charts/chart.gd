@@ -94,9 +94,11 @@ func _draw() -> void:
 
 	# GridBox
 	if not is_x_fixed or not is_y_fixed :
+		var _x: Array = x
+		var _y: Array = y
 		if chart_properties.max_samples > 0 :
-			var _x: Array = []
-			var _y: Array = []
+			_x = []
+			_y = []
 
 			_x.resize(x.size())
 			_y.resize(y.size())
@@ -107,16 +109,17 @@ func _draw() -> void:
 				if not is_y_fixed:
 					_y[i] = y[i].slice(max(0, y[i].size() - chart_properties.max_samples), y[i].size())
 
-			if not is_x_fixed:
-				x_domain = ChartAxisDomain.from_values(_x, chart_properties.smooth_domain)
-			if not is_y_fixed:
-				y_domain = ChartAxisDomain.from_values(_y, chart_properties.smooth_domain)
-		else:
-			if not is_x_fixed:
-				x_domain = ChartAxisDomain.from_values(x, chart_properties.smooth_domain)
-			if not is_y_fixed:
-				y_domain = ChartAxisDomain.from_values(y, chart_properties.smooth_domain)
-	
+		# Ensure that zero is available on the y-axis in case of we have at least one
+		# bar chart function. This is a dirty hack to ensure that bars are not drawn below
+		# the x-axis / x-axis tick labels.
+		if get_functions_by_type(Function.Type.BAR).size() > 0:
+			_y.append([0])
+
+		if not is_x_fixed:
+			x_domain = ChartAxisDomain.from_values(_x, chart_properties.smooth_domain)
+		if not is_y_fixed:
+			y_domain = ChartAxisDomain.from_values(_y, chart_properties.smooth_domain)
+
 	if !x_domain.is_discrete:
 		x_domain.set_tick_count(chart_properties.x_scale)
 
