@@ -22,6 +22,9 @@ func update_position(position: Vector2) -> void:
 func set_font(font: FontFile) -> void:
 	theme.set("default_font", font)
 
+func set_stylebox(stylebox: StyleBox) -> void:
+	add_theme_stylebox_override("panel", stylebox)
+
 func update_values(x: String, y: String, function: Function, color: Color) -> void:
 	x_lbl.set_text(x)
 	y_lbl.set_text(y)
