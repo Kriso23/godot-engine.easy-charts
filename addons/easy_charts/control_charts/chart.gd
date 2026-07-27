@@ -272,8 +272,6 @@ func _warn_about_deprecated_chart_properties_styling_if_required():
 # theme properties. In future, when styling related ChartProperties are removed
 # this should be changed to use the values from the default_chart_theme.tres.
 func _init_missing_theming_properties_with_defaults(chart_properties: ChartProperties):
-	theme.default_font = chart_properties.font
-	
 	if !has_theme_color("origin_color", "Chart"):
 		theme.set_color("origin_color", "Chart", chart_properties.colors.origin)
 
