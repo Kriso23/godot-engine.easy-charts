@@ -202,10 +202,6 @@ func _on_plot_box_resized() -> void:
 	for function in functions_box.get_children():
 		function.queue_redraw()
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_THEME_CHANGED and _tooltip:
-		_tooltip.set_stylebox(get_theme_stylebox("tooltip_box", theme_type_variation))
-
 func _show_tooltip(point: Point, function: Function, options: Dictionary = {}) -> void:
 	var x_value: String = x_domain.get_tick_label(point.value.x, x_labels_function)
 	var y_value: String = y_domain.get_tick_label(point.value.y, y_labels_function)
@@ -214,7 +210,10 @@ func _show_tooltip(point: Point, function: Function, options: Dictionary = {}) -
 	_tooltip.update_values(x_value, y_value, function, color)
 	_tooltip.show()
 	_tooltip.update_position(point.position)
-	_tooltip.set_stylebox(get_theme_stylebox("tooltip_box", theme_type_variation))
+	if theme_type_variation.is_empty():
+		_tooltip.set_stylebox(get_theme_stylebox("tooltip_box", "Chart"))
+	else:
+		_tooltip.set_stylebox(get_theme_stylebox("tooltip_box", theme_type_variation))
 	_function_of_tooltip = function
 
 func _hide_tooltip(point: Point, function: Function) -> void:
