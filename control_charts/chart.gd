@@ -163,7 +163,20 @@ func set_y_domain(lb: Variant, ub: Variant) -> void:
 	y_domain = ChartAxisDomain.from_bounds(lb, ub)
 
 func update_plotbox(x_domain: ChartAxisDomain, y_domain: ChartAxisDomain, x_labels_function: Callable, y_labels_function: Callable) -> void:
-	plot_box.box_margins = calculate_plotbox_margins(x_domain, y_domain, y_labels_function)
+	# A chart made only of pies has no axes, so it reserves no room for them. The margins
+	# are asymmetric by design — left for the y tick labels, bottom for the x ones — which
+	# on a pie just pushes the circle up and to the right of its container.
+	if is_axisless():
+		plot_box.box_margins = Vector2.ZERO
+	else:
+		plot_box.box_margins = calculate_plotbox_margins(x_domain, y_domain, y_labels_function)
+
+## Whether nothing plotted here is drawn against axes, so ticks, grid and their margins are
+## all dead weight. Pie is currently the only such type.
+func is_axisless() -> bool:
+	if functions.is_empty():
+		return false
+	return get_functions_by_type(Function.Type.PIE).size() == functions.size()
 
 func update_gridbox(x_domain: ChartAxisDomain, y_domain: ChartAxisDomain, x_labels_function: Callable, y_labels_function: Callable) -> void:
 	grid_box.set_domains(x_domain, y_domain)

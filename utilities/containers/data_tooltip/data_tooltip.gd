@@ -13,11 +13,28 @@ func _ready():
 	hide()
 	update_size()
 
-func update_position(position: Vector2) -> void:
-	var x_pos: float = gap
-	if x_pos + get_rect().size.x > get_parent().size.x - position.x:
-		x_pos = - x_pos - get_rect().size.x
-	self.position = position + Vector2(x_pos, - get_rect().size.y / 2)
+func update_position(point_position: Vector2) -> void:
+	# The panel is resized to zero whenever it hides, and the new text has not been laid out
+	# yet when this runs, so get_rect() is stale on the first show. The minimum size is
+	# accurate immediately, which is what the flip and the clamp below both need.
+	var tooltip_size: Vector2 = get_combined_minimum_size()
+	# Prefer sitting to the right of the point; flip to its left when that would run past
+	# the plot's right edge.
+	var offset_x: float = gap
+	if offset_x + tooltip_size.x > get_parent().size.x - point_position.x:
+		offset_x = -gap - tooltip_size.x
+	position = _clamped_to_viewport(point_position + Vector2(offset_x, -tooltip_size.y / 2), tooltip_size)
+
+## Keep the whole tooltip on screen. The flip above only reasons about the plot box's right
+## edge, so a chart docked against a window edge could still push the tooltip out of the
+## window — and a point near the top or bottom was never checked at all.
+func _clamped_to_viewport(local_position: Vector2, tooltip_size: Vector2) -> Vector2:
+	var origin: Vector2 = get_parent().global_position
+	var limit: Vector2 = get_viewport_rect().size - tooltip_size
+	var target: Vector2 = origin + local_position
+	target.x = clampf(target.x, 0.0, maxf(limit.x, 0.0)) # maxf: a tooltip wider than the
+	target.y = clampf(target.y, 0.0, maxf(limit.y, 0.0)) # window still pins to the corner
+	return target - origin
 
 func set_font(font: FontFile) -> void:
 	theme.set("default_font", font)
