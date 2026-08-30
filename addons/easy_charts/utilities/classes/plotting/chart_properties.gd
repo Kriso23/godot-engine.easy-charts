@@ -43,8 +43,7 @@ var show_title: bool = true
 var show_slice_ratios: bool = true
 
 ## PIE only. The slice's own plotted value, drawn on the slice under the ratio ("(53.1)").
-## Turn this off where the values you plot are already percentages, or it just restates the
-## ratio above it.
+## Turn this off when ratio == value (otherwise it just duplicates info)
 var show_slice_values: bool = true
 
 ## If true will show the legend of your Chart on the right side of the frame.
