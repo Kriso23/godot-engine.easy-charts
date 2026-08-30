@@ -39,6 +39,14 @@ var show_x_label: bool = true
 var show_y_label: bool = true
 var show_title: bool = true
 
+## PIE only. The percentage each slice takes of the whole, drawn on the slice ("53.1%").
+var show_slice_ratios: bool = true
+
+## PIE only. The slice's own plotted value, drawn on the slice under the ratio ("(53.1)").
+## Turn this off where the values you plot are already percentages, or it just restates the
+## ratio above it.
+var show_slice_values: bool = true
+
 ## If true will show the legend of your Chart on the right side of the frame.
 var show_legend: bool = false
 
