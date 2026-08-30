@@ -83,34 +83,35 @@ func _draw_pie() -> void:
 		draw_polyline(slices[i], Color.WHITE, 2.0, true)
 
 func _draw_labels(radius: float, center: Vector2, ratios: PackedFloat32Array) -> void:
+	var props: ChartProperties = get_chart_properties()
+	if not props.show_slice_ratios and not props.show_slice_values:
+		return
 	for i in slices_dirs.size():
-		var ratio_lbl: String = "%.1f%%" % ratios[i]
-		var value_lbl: String = "(%s)" % function.__x[i]
+		var lines: PackedStringArray = []
+		if props.show_slice_ratios:
+			lines.append("%.1f%%" % ratios[i])
+		if props.show_slice_values:
+			lines.append("(%s)" % function.__x[i])
+		# Stack whatever is enabled around the slice midpoint, so a single line sits centred
+		# on it rather than offset by the gap the other one used to fill.
 		var position: Vector2 = center + slices_dirs[i] * radius * 0.5
-		var ratio_lbl_size: Vector2 = get_chart_properties().get_string_size(ratio_lbl)
-		var value_lbl_size: Vector2 = get_chart_properties().get_string_size(value_lbl)
-		draw_string(
-			get_chart_properties().font,
-			position - Vector2(ratio_lbl_size.x / 2, 0),
-			ratio_lbl,
-			HORIZONTAL_ALIGNMENT_CENTER,
-			ratio_lbl_size.x,
-			16,
-			Color.WHITE,
-			3,
-			TextServer.DIRECTION_AUTO,
-			TextServer.ORIENTATION_HORIZONTAL
-		)
-		draw_string(
-			get_chart_properties().font,
-			position - Vector2(value_lbl_size.x / 2, - value_lbl_size.y),
-			value_lbl,
-			HORIZONTAL_ALIGNMENT_CENTER,
-			value_lbl_size.x,
-			16,
-			Color.WHITE,
-			3,TextServer.DIRECTION_AUTO,TextServer.ORIENTATION_HORIZONTAL
-		)
+		var line_height: float = props.get_string_size(lines[0]).y
+		var offset_y: float = -(lines.size() - 1) * line_height * 0.5
+		for line: String in lines:
+			var line_size: Vector2 = props.get_string_size(line)
+			draw_string(
+				props.font,
+				position + Vector2(-line_size.x / 2, offset_y),
+				line,
+				HORIZONTAL_ALIGNMENT_CENTER,
+				line_size.x,
+				16,
+				Color.WHITE,
+				3,
+				TextServer.DIRECTION_AUTO,
+				TextServer.ORIENTATION_HORIZONTAL
+			)
+			offset_y += line_height
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
